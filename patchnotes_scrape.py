@@ -50,7 +50,7 @@ for notes in patch_notes:
     summary = notes.find('p', class_="summary")
     full_summary = notes.find('blockquote', class_="blockquote context")
     change_detail = notes.find_all('h4', class_="change-detail-title ability-title")
-    attribute_change = notes.find_all('div', class_="attribute-change")
+    #attribute_change = notes.find_all('div', class_="attribute-change")
     reference_image = notes.find('img')
     reference_link = notes.find('a')['href']
 
