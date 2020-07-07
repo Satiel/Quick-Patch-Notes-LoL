@@ -15,7 +15,7 @@ Posts a tweet to a dedicated Twitter account, adding a link to the scraped versi
 # Task List
 
 - [x] Develop code for parsing the patch notes webpage for information
-- [ ] Check for newly uploaded patch notes webpage
+- [x] Check for newly uploaded patch notes webpage
 - [ ] Tweet when new patch notes webpage is located
 - [ ] Automatically parse new patch notes webpage
 - [ ] Tweet upon successful completion of parse
