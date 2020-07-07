@@ -2,6 +2,7 @@ import requests
 from requests.exceptions import ConnectionError
 import pprint
 from bs4 import BeautifulSoup
+import os
 
 def scrape(webpage):
     pp = pprint.PrettyPrinter(indent=4, compact=True)
@@ -113,13 +114,62 @@ def page_exists(webpage):
     print(request.status_code)
     print(request.text)'''
 
+def find_new_patch():
+    #set THIS_FOLDER to current absolute path
+    THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+
+    #join together absolute path + file name
+    patch_version_file = os.path.join(THIS_FOLDER, 'patch_versions.txt')
+
+    #open up the file, print each line
+    f = open(patch_version_file, "r")
+    #print(f.readlines())
+
+    #add all versions into a list, removing the newline character
+    patch_versions = []
+    line = f.readline()
+    while line:
+        line = line.strip()
+        line = str(line)
+        patch_versions.append(line)
+        line = f.readline()
+    f.close()
+
+    #peek into last version on the list
+
+    print(patch_versions[0])
+    print(patch_versions[0][0:2])
+
+    patch_version_to_check = patch_versions[0][0:2] + '-1'
+    version = 1
+    while (page_exists('https://na.leagueoflegends.com/en-us/news/game-updates/patch-' + patch_version_to_check + '-notes/') == True):
+        print("Found patch: " + patch_version_to_check)
+        version = version + 1
+        patch_version_to_check = patch_versions[0][0:2] + '-' + str(version)
+    print("No patch found for " + patch_version_to_check)
+
+    version = version - 1
+    patch_version_to_check = patch_versions[0][0:2] + '-' + str(version)
+    scrape('https://na.leagueoflegends.com/en-us/news/game-updates/patch-' + patch_version_to_check + '-notes/')
+        
+
+    '''if page_exists('https://na.leagueoflegends.com/en-us/news/game-updates/patch-' + str(version_plus_10) + '-notes/') == True:
+        print ("Found patch: " + version_plus_10)
+    elif page_exists('https://na.leagueoflegends.com/en-us/news/game-updates/patch-' + str(version_plus_01) + '-notes/') == True:
+        print("Found patch: " + version_plus_01)
+    else:
+        print ("No new patch found after " + patch_versions[-1])'''
+
+
     
 
 if __name__ == "__main__":
     print("Sweet")
-    new_patch_page = 'https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-13-notes/'
+    '''new_patch_page = 'https://na.leagueoflegends.com/en-us/news/game-updates/patch-10-13-notes/'
     #scrape()
     if page_exists(new_patch_page) == True:
         scrape(new_patch_page)
     else:
-        print("Page not found")
+        print("Page not found")'''
+
+    find_new_patch()
