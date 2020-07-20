@@ -10,12 +10,14 @@ This script is designed to keep an eye on the League of Legends patch notes webs
 - **Full Patch Summary** (*flavor text from the devs*)
 - **Detailed Attribute Changes** (*ex. Attack Damage Growth 2.2 ⇒ 2*)
 
-Posts a tweet to a dedicated Twitter account, adding a link to the scraped version of the patch notes page.
+Posts a tweet to a dedicated Twitter account, quickly detailing scraped version of the patch notes.
 
 # Task List
-
+Finished:
 - [x] Develop code for parsing the patch notes webpage for information
 - [x] Check for newly uploaded patch notes webpage
-- [ ] Tweet when new patch notes webpage is located
-- [ ] Automatically parse new patch notes webpage
-- [ ] Tweet upon successful completion of parse
+- [x] Automatically parse new patch notes webpage
+- [x] Tweet upon successful completion of parse, including new patch version and list of champs/items/etc. to be patched
+
+To do:
+- [ ] Setup dynamic image that can be filled with: Names, Patch Summary, Full Patch Summary, and attribute changes
