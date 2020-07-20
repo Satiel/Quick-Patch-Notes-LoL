@@ -23,11 +23,15 @@ def scrape(webpage):
     #find elements by HTML Class Name, creates an iterable
     patch_notes = results.find_all('div', class_='patch-change-block white-stone accent-before')
 
+    #list to hold all the names of the champions and items being patched
+    champs_items_patched = []
+
     for notes in patch_notes:
         #each note is a new BeautifulSoup object
 
         #locate change header, the name of champ/item being patched (lucian, hexdrinker, etc)
         change_header = notes.find('h3', class_='change-title')
+        champs_items_patched.append(change_header.text.strip())
         
         #locate summary (short summary of patch)
         summary = notes.find('p', class_="summary")
@@ -55,6 +59,8 @@ def scrape(webpage):
         print(summary.text.strip())
         print(full_summary.text.strip())
         print()
+
+    return champs_items_patched
 
 def page_exists(webpage):
 
@@ -153,10 +159,37 @@ def find_new_patch():
             #set version back 1 since it overshoots during the patch check
             version = version - 1
             patch_version_to_check = major_patch + '-' + str(version)
-            scrape(base_url + patch_version_to_check + '-notes/')
+            champ_items_patched = scrape(base_url + patch_version_to_check + '-notes/')
+
+            #iterate through the list of champs and items, concatenate them, check string length for tweet (280 limit)
+            all_champs_items = ""
+            for item in champ_items_patched:
+                #print(item)
+                all_champs_items = all_champs_items + item + " "
+
+            print("Length of all_champs_items = " + str(len(all_champs_items)))
+
+            #if length of champs, items is greater than 280 - tweet first half of list, then second half
+            #otherwise, tweet the whole list
+
+            if len(all_champs_items) <= 264:
+                compose_tweet(patch_version_to_check, all_champs_items)
+            else:
+                #chop it up into two tweets -- NEED BETTER WAY TO DO THIS LATER
+                all_champs_items = ""
+                for item in champ_items_patched[0::2]:
+                    all_champs_items = all_champs_items + item + " "
+                compose_tweet(patch_version_to_check, all_champs_items)
+                all_champs_items = ""
+                for item in champ_items_patched[1::2]:
+                    all_champs_items = all_champs_items + item + " "
+                compose_tweet(patch_version_to_check, all_champs_items)
+
 
             #send tweet with new patch version
-            compose_tweet(patch_version_to_check)
+            #compose_tweet(patch_version_to_check)
+
+
         else:
             print("No new patches")
     '''else:
@@ -164,7 +197,7 @@ def find_new_patch():
         patch_version_to_check = major_patch_jump + '-' + str(version_jump)'''
 
     
-def compose_tweet(patch_to_tweet):
+def compose_tweet(patch_to_tweet, champs_items):
     #set THIS_FOLDER to current absolute path
     THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
     #join together absolute path + file name
@@ -192,7 +225,8 @@ def compose_tweet(patch_to_tweet):
     for follower in followers:
         print(follower.screen_name)'''
 
-    api.update_status('!!! NEW PATCH !!!\n' + patch_to_tweet)
+    #api.update_status('NEW PATCH: \n' + patch_to_tweet)
+    api.update_status('NEW PATCH: \n' + patch_to_tweet + "\n" + champs_items)
 
 def main():
     print("Sweet")
